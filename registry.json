@@ -1,0 +1,109 @@
+{
+  "$schema": "https://registry.getarcane.app/schema.json",
+  "name": "Archikart Templates",
+  "description": "Docker Compose Templates der Archikart Software AG (ALKIS, Elastic) für Arcane.",
+  "version": "1.0.0",
+  "author": "Archikart Software AG",
+  "url": "https://github.com/archikartsoftwareag/arcane-templates",
+  "templates": [
+    {
+      "id": "alkis-4-79",
+      "name": "Archikart ALKIS 4.79",
+      "description": "Archikart ALKIS 4.79 Für ALKIS ab 4.79.0.",
+      "version": "4.79.0",
+      "author": "Archikart Software AG",
+      "compose_url": "https://raw.githubusercontent.com/archikartsoftwareag/arcane-templates/main/templates/alkis-4-79/compose.yaml",
+      "env_url": "https://raw.githubusercontent.com/archikartsoftwareag/arcane-templates/main/templates/alkis-4-79/.env.example",
+      "documentation_url": "https://github.com/archikartsoftwareag/arcane-templates/tree/main/templates/alkis-4-79",
+      "icon_url": "https://www.archikart.de/system/modules/de.archikart.homepage/resources/img/logo.png",
+      "content_hash": "19b2a8721928a829b5473957a883d0ce37e1774ca48b1f110483b2fe470bcc8e",
+      "tags": [
+        "alkis",
+        "archikart"
+      ]
+    },
+    {
+      "id": "alkis-4-80",
+      "name": "Archikart ALKIS 4.80",
+      "description": "Archikart ALKIS 4.80 Für ALKIS ab 4.80.0.",
+      "version": "4.80.0",
+      "author": "Archikart Software AG",
+      "compose_url": "https://raw.githubusercontent.com/archikartsoftwareag/arcane-templates/main/templates/alkis-4-80/compose.yaml",
+      "env_url": "https://raw.githubusercontent.com/archikartsoftwareag/arcane-templates/main/templates/alkis-4-80/.env.example",
+      "documentation_url": "https://github.com/archikartsoftwareag/arcane-templates/tree/main/templates/alkis-4-80",
+      "icon_url": "https://www.archikart.de/system/modules/de.archikart.homepage/resources/img/logo.png",
+      "content_hash": "a6567f1b3341f4e79c8aa0decce1624d7497dae539518f42460a2add1a7de5cd",
+      "tags": [
+        "alkis",
+        "archikart"
+      ]
+    },
+    {
+      "id": "alkis-4-81",
+      "name": "Archikart ALKIS 4.81",
+      "description": "Archikart ALKIS 4.81 Für ALKIS ab 4.81.0.",
+      "version": "4.81.0",
+      "author": "Archikart Software AG",
+      "compose_url": "https://raw.githubusercontent.com/archikartsoftwareag/arcane-templates/main/templates/alkis-4-81/compose.yaml",
+      "env_url": "https://raw.githubusercontent.com/archikartsoftwareag/arcane-templates/main/templates/alkis-4-81/.env.example",
+      "documentation_url": "https://github.com/archikartsoftwareag/arcane-templates/tree/main/templates/alkis-4-81",
+      "icon_url": "https://www.archikart.de/system/modules/de.archikart.homepage/resources/img/logo.png",
+      "content_hash": "9590596bcc9edb8d0e256db297cee7762b97e574f0e8d8d5e669a6b5fcf2eb12",
+      "tags": [
+        "alkis",
+        "archikart"
+      ]
+    },
+    {
+      "id": "elastic-4-79",
+      "name": "Archikart Elastic 4.79",
+      "description": "Archikart Elastic 4.79 Ermöglicht die Nutzung der Globalen Suche im AK4 mit Elastic. Der Name des zugehörigen Volumes (Speicherort der Elastic Daten für die Suche) ist elasticsearch, wobei diesem der Name des Stacks vorangeht. Beispiel ak_elastic_elasticsearch. Bitte beachten Sie das eine latest Version von uns zur Zeit nicht bereitgestellt wird. Alle Felder müssen ausgefüllt sein. Für alle Archikart 4.79 Versionen.",
+      "version": "4.79.0",
+      "author": "Archikart Software AG",
+      "compose_url": "https://raw.githubusercontent.com/archikartsoftwareag/arcane-templates/main/templates/elastic-4-79/compose.yaml",
+      "env_url": "https://raw.githubusercontent.com/archikartsoftwareag/arcane-templates/main/templates/elastic-4-79/.env.example",
+      "documentation_url": "https://github.com/archikartsoftwareag/arcane-templates/tree/main/templates/elastic-4-79",
+      "icon_url": "https://www.archikart.de/system/modules/de.archikart.homepage/resources/img/logo.png",
+      "content_hash": "8168a7a8ae1cdf6afaf7933a12e5e9c99f6e7ff8890e5b892436d681c8d451b9",
+      "tags": [
+        "search",
+        "elastic",
+        "globalsearch"
+      ]
+    },
+    {
+      "id": "elastic-4-80",
+      "name": "Archikart Elastic 4.80",
+      "description": "Archikart Elastic 4.80 Ermöglicht die Nutzung der Globalen Suche im AK4 mit Elastic. Der Name des zugehörigen Volumes (Speicherort der Elastic Daten für die Suche) ist elasticsearch, wobei diesem der Name des Stacks vorangeht. Beispiel ak_elastic_elasticsearch. Bitte beachten Sie das eine latest Version von uns zur Zeit nicht bereitgestellt wird. Alle Felder müssen ausgefüllt sein. Für alle Archikart 4.80 Versionen.",
+      "version": "4.80.0",
+      "author": "Archikart Software AG",
+      "compose_url": "https://raw.githubusercontent.com/archikartsoftwareag/arcane-templates/main/templates/elastic-4-80/compose.yaml",
+      "env_url": "https://raw.githubusercontent.com/archikartsoftwareag/arcane-templates/main/templates/elastic-4-80/.env.example",
+      "documentation_url": "https://github.com/archikartsoftwareag/arcane-templates/tree/main/templates/elastic-4-80",
+      "icon_url": "https://www.archikart.de/system/modules/de.archikart.homepage/resources/img/logo.png",
+      "content_hash": "56292646675a9d1b4eae229080cbfe4c3921055e1143424aaf94051433e9c8f2",
+      "tags": [
+        "search",
+        "elastic",
+        "globalsearch"
+      ]
+    },
+    {
+      "id": "elastic-4-81",
+      "name": "Archikart Elastic 4.81",
+      "description": "Archikart Elastic 4.81 Ermöglicht die Nutzung der Globalen Suche im AK4 mit Elastic. Der Name des zugehörigen Volumes (Speicherort der Elastic Daten für die Suche) ist elasticsearch, wobei diesem der Name des Stacks vorangeht. Beispiel ak_elastic_elasticsearch. Bitte beachten Sie das eine latest Version von uns zur Zeit nicht bereitgestellt wird. Alle Felder müssen ausgefüllt sein. Für alle Archikart 4.81 Versionen.",
+      "version": "4.81.0",
+      "author": "Archikart Software AG",
+      "compose_url": "https://raw.githubusercontent.com/archikartsoftwareag/arcane-templates/main/templates/elastic-4-81/compose.yaml",
+      "env_url": "https://raw.githubusercontent.com/archikartsoftwareag/arcane-templates/main/templates/elastic-4-81/.env.example",
+      "documentation_url": "https://github.com/archikartsoftwareag/arcane-templates/tree/main/templates/elastic-4-81",
+      "icon_url": "https://www.archikart.de/system/modules/de.archikart.homepage/resources/img/logo.png",
+      "content_hash": "9142419f7250b70fd559fbd7bec9a4ace12441251ecb1b63a1e979233d889138",
+      "tags": [
+        "search",
+        "elastic",
+        "globalsearch"
+      ]
+    }
+  ]
+}

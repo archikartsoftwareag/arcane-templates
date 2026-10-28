@@ -1,0 +1,11 @@
+{
+  "name": "Archikart ALKIS 4.80",
+  "description": "Archikart ALKIS 4.80 Für ALKIS ab 4.80.0.",
+  "version": "4.80.0",
+  "author": "Archikart Software AG",
+  "icon_url": "https://www.archikart.de/system/modules/de.archikart.homepage/resources/img/logo.png",
+  "tags": [
+    "alkis",
+    "archikart"
+  ]
+}

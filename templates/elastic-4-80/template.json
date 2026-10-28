@@ -1,0 +1,12 @@
+{
+  "name": "Archikart Elastic 4.80",
+  "description": "Archikart Elastic 4.80 Ermöglicht die Nutzung der Globalen Suche im AK4 mit Elastic. Der Name des zugehörigen Volumes (Speicherort der Elastic Daten für die Suche) ist elasticsearch, wobei diesem der Name des Stacks vorangeht. Beispiel ak_elastic_elasticsearch. Bitte beachten Sie das eine latest Version von uns zur Zeit nicht bereitgestellt wird. Alle Felder müssen ausgefüllt sein. Für alle Archikart 4.80 Versionen.",
+  "version": "4.80.0",
+  "author": "Archikart Software AG",
+  "icon_url": "https://www.archikart.de/system/modules/de.archikart.homepage/resources/img/logo.png",
+  "tags": [
+    "search",
+    "elastic",
+    "globalsearch"
+  ]
+}

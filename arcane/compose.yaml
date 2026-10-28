@@ -1,0 +1,115 @@
+# Arcane (Docker-Verwaltung) mit vorkonfigurierten Archikart Templates und Docker-Registry
+# Quelle: https://github.com/archikartsoftwareag/arcane-templates (arcane/compose.yaml)
+# Login beim ersten Start: arcane / arcane-admin (Passwortwechsel erzwungen)
+# UI: http://<host>:3552
+# Keine Pflichtvariablen; optionale Variablen siehe .env.example
+# (Portainer: als Stack-Umgebungsvariablen setzen, CLI: .env neben dieser Datei)
+services:
+  # Erzeugt beim ersten Start ENCRYPTION_KEY und Admin-API-Key im Volume arcane-secrets.
+  # Vorhandene Keys werden nie überschrieben. ENCRYPTION_KEY kann zur Übernahme einer
+  # bestehenden Installation vorgegeben werden (wirkt nur, solange noch kein Key existiert).
+  arcane-keys:
+    image: curlimages/curl:8.11.1
+    user: '0:0'
+    restart: 'no'
+    environment:
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY:-}
+    volumes:
+      - arcane-secrets:/secrets
+    entrypoint: ['/bin/sh', '-c']
+    command:
+      - |
+        set -eu
+        umask 077
+        rnd() { head -c 32 /dev/urandom | od -An -tx1 | tr -d ' \n'; }
+        [ -s /secrets/encryption_key ] || { printf '%s' "$${ENCRYPTION_KEY:-$$(rnd)}" > /secrets/encryption_key; echo "ENCRYPTION_KEY angelegt"; }
+        [ -s /secrets/api_key ] || { printf 'arc_%s' "$$(rnd)" > /secrets/api_key; echo "API-Key angelegt"; }
+        # Besitzer = PUID/PGID von arcane, sonst kann Arcane die Keys nicht lesen
+        chown 1000:1000 /secrets/encryption_key /secrets/api_key
+        chmod 400 /secrets/encryption_key /secrets/api_key
+
+  arcane:
+    image: ghcr.io/getarcaneapp/manager:v2.17.1
+    container_name: arcane
+    restart: unless-stopped
+    depends_on:
+      arcane-keys:
+        condition: service_completed_successfully
+    ports:
+      - '3552:3552'
+    volumes:
+      # Ohne Docker-Socket kein Zugriff auf Docker
+      - /var/run/docker.sock:/var/run/docker.sock
+      - arcane-data:/app/data
+      - arcane-secrets:/run/secrets/arcane:ro
+    environment:
+      - APP_URL=${APP_URL:-http://localhost:3552}
+      - PUID=1000
+      - PGID=1000
+      # Verschlüsselt u. a. die hinterlegten Registry-Passwörter
+      - ENCRYPTION_KEY_FILE=/run/secrets/arcane/encryption_key
+      # Admin-API-Key, wird von arcane-init zur Erstkonfiguration genutzt
+      - ADMIN_STATIC_API_KEY_FILE=/run/secrets/arcane/api_key
+      # Liegt im Data-Volume, dort darf Arcane schreiben
+      - PROJECTS_DIRECTORY=/app/data/projects
+      - ANALYTICS_DISABLED=true
+      - TZ=Europe/Berlin
+    # Für die Evaluation aus: fehlschlagender Healthcheck führte zum Kill (137)
+    healthcheck:
+      disable: true
+
+  # Erstkonfiguration über die Arcane-API (idempotent, läuft bei jedem Stack-Start kurz mit):
+  # - Archikart Template-Registry eintragen
+  # - docker.archikart.de mit Benutzer/Passwort als Container-Registry eintragen (falls gesetzt)
+  # Bereits vorhandene Einträge werden nicht verändert.
+  arcane-init:
+    image: curlimages/curl:8.11.1
+    user: '1000:1000'
+    restart: 'no'
+    depends_on:
+      - arcane
+    volumes:
+      - arcane-secrets:/secrets:ro
+    environment:
+      ARCANE_API: http://arcane:3552/api
+      TEMPLATE_REGISTRY_URL: ${TEMPLATE_REGISTRY_URL:-https://raw.githubusercontent.com/archikartsoftwareag/arcane-templates/main/registry.json}
+      DOCKER_REGISTRY_URL: ${DOCKER_REGISTRY_URL:-docker.archikart.de}
+      DOCKER_REGISTRY_USER: ${DOCKER_REGISTRY_USER:-}
+      DOCKER_REGISTRY_PASSWORD: ${DOCKER_REGISTRY_PASSWORD:-}
+    entrypoint: ['/bin/sh', '-c']
+    command:
+      - |
+        set -u
+        ARCANE_API_KEY=$$(cat /secrets/api_key)
+        api() { curl -sS --fail-with-body -H "X-API-Key: $$ARCANE_API_KEY" -H 'Content-Type: application/json' "$$@"; }
+        json() { printf '%s' "$$1" | sed 's/\\/\\\\/g; s/"/\\"/g'; }
+
+        echo "Warte auf Arcane ..."
+        i=0
+        until api "$$ARCANE_API/templates/registries" >/dev/null 2>&1; do
+          i=$$((i+1)); [ "$$i" -ge 60 ] && { echo "Arcane-API nicht erreichbar oder API-Key ungültig"; exit 1; }
+          sleep 5
+        done
+
+        if api "$$ARCANE_API/templates/registries" | grep -qF "\"url\":\"$$TEMPLATE_REGISTRY_URL\""; then
+          echo "Template-Registry bereits vorhanden"
+        else
+          api -X POST "$$ARCANE_API/templates/registries" \
+            -d "{\"name\":\"Archikart Templates\",\"url\":\"$$(json "$$TEMPLATE_REGISTRY_URL")\",\"description\":\"ALKIS und Elastic Stacks der Archikart Software AG\",\"enabled\":true}" >/dev/null \
+            && echo "Template-Registry angelegt" || exit 1
+        fi
+
+        if [ -z "$$DOCKER_REGISTRY_USER" ] || [ -z "$$DOCKER_REGISTRY_PASSWORD" ]; then
+          echo "DOCKER_REGISTRY_USER/-PASSWORD nicht gesetzt – Container-Registry übersprungen (in Arcane unter Customization → Container Registries eintragen)"
+        elif api "$$ARCANE_API/container-registries?limit=100" | grep -qF "\"url\":\"$$DOCKER_REGISTRY_URL\""; then
+          echo "Container-Registry bereits vorhanden"
+        else
+          api -X POST "$$ARCANE_API/container-registries" \
+            -d "{\"url\":\"$$(json "$$DOCKER_REGISTRY_URL")\",\"username\":\"$$(json "$$DOCKER_REGISTRY_USER")\",\"token\":\"$$(json "$$DOCKER_REGISTRY_PASSWORD")\",\"description\":\"Archikart Docker Registry\",\"enabled\":true,\"insecure\":false,\"registryType\":\"generic\",\"repositoryNames\":[],\"awsAccessKeyId\":\"\",\"awsSecretAccessKey\":\"\",\"awsRegion\":\"\"}" >/dev/null \
+            && echo "Container-Registry angelegt" || exit 1
+        fi
+
+volumes:
+  arcane-data:
+  # Enthält ENCRYPTION_KEY und Admin-API-Key – mit arcane-data zusammen sichern
+  arcane-secrets:
